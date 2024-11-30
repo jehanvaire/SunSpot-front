@@ -1,0 +1,14 @@
+.weather-bar {
+  --background: var(--ion-color-light);
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+
+  .weather-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 1.1em;
+    color: var(--ion-color-dark);
+  }
+}

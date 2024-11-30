@@ -1,0 +1,24 @@
+.spot-info {
+  background: var(--ion-color-light);
+  padding: 16px;
+  border-top: 1px solid var(--ion-color-medium);
+
+  .spot-details {
+    margin-bottom: 12px;
+
+    h2 {
+      margin: 0;
+      font-size: 1.1em;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      margin: 8px 0 0;
+      color: var(--ion-color-medium);
+    }
+  }
+
+  .navigate-button {
+    margin: 0;
+  }
+}

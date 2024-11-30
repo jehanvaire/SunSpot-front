@@ -1,0 +1,8 @@
+@use "sass:math";
+
+// Mixins globaux pour l'application
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

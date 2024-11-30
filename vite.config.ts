@@ -10,6 +10,21 @@ export default defineConfig({
     react(),
     legacy()
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/theme/mixins" as *;`,
+        sassOptions: {
+          outputStyle: 'compressed'
+        }
+      }
+    }
+  },
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
+  },
   test: {
     globals: true,
     environment: 'jsdom',
