@@ -1,0 +1,7 @@
+{
+  "name": "SunSpot-front",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
