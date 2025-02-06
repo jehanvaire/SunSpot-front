@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Map } from '@vis.gl/react-maplibre';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './styles/Map.scss';
