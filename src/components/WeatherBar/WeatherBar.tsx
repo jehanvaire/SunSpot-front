@@ -60,7 +60,9 @@ const WeatherBar: React.FC = () => {
         </IonCol>
         
         <IonCol className="weather-details">
-          <div className="description">{weather.description}</div>
+          <div className="description">
+            <span className="city">{weather.city}</span> - {weather.description}
+          </div>
           
           <div className="additional-info">
             <span className="info-item">

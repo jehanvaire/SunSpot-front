@@ -9,6 +9,7 @@ export interface WeatherData {
   clouds: number;
   sunrise: Date;
   sunset: Date;
+  city: string;
 }
 
 export class WeatherService {
@@ -36,6 +37,7 @@ export class WeatherService {
         clouds: data.clouds.all,
         sunrise: new Date(data.sys.sunrise * 1000),
         sunset: new Date(data.sys.sunset * 1000),
+        city: data.name,
       };
     } catch (error) {
       const axiosError = error as AxiosError;
