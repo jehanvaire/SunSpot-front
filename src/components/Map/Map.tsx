@@ -49,7 +49,12 @@ const MapComponent: React.FC = () => {
         } : undefined
       });
 
-      map.addControl(geolocate);
+      // Ajoute le contrôle de navigation (boussole + zoom)
+      const navigationControl = new maplibregl.NavigationControl();
+      map.addControl(navigationControl, 'top-left');
+
+      // Ajoute le contrôle de géolocalisation
+      map.addControl(geolocate, 'top-right');
 
       geolocate.on('geolocate', (e: any) => {
         const position: CachedPosition = {
@@ -91,10 +96,10 @@ const MapComponent: React.FC = () => {
   }, []);
 
   return (
-    <div 
-      ref={mapContainerRef}
-      className="map-container"
-    />
+      <div 
+        ref={mapContainerRef}
+        className="map-container"
+      />
   );
 };
 
