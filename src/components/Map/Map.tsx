@@ -2,6 +2,9 @@ import * as React from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './styles/Map.scss';
+import WeatherMarker from '../Weather/WeatherMarker';
+import { geocodingService, LocationData } from '../../services/geocodingService';
+import { weatherService } from '../../services/weatherService';
 
 interface CachedPosition {
   longitude: number;
@@ -12,6 +15,14 @@ interface CachedPosition {
 const MapComponent: React.FC = () => {
   const mapContainerRef = React.useRef<HTMLDivElement>(null);
   const mapRef = React.useRef<maplibregl.Map | null>(null);
+  const [currentPosition, setCurrentPosition] = React.useState<{latitude: number, longitude: number} | null>(null);
+  const [nearestCity, setNearestCity] = React.useState<LocationData | null>(null);
+  const [nearbyCities, setNearbyCities] = React.useState<LocationData[]>([]);
+  const [isLoadingCity, setIsLoadingCity] = React.useState<boolean>(false);
+  const [isLoadingNearbyCities, setIsLoadingNearbyCities] = React.useState<boolean>(false);
+  
+  // Read maxCities from environment variable with fallback to 10
+  const maxCities = parseInt(import.meta.env.VITE_MAX_NEARBY_CITIES) || 10;
 
   const getLastKnownPosition = (): CachedPosition | null => {
     const cached = localStorage.getItem('lastKnownPosition');
@@ -24,6 +35,49 @@ const MapComponent: React.FC = () => {
     }
     return null;
   };
+
+  // Get the nearest city and nearby cities when position changes
+  React.useEffect(() => {
+    if (!currentPosition) return;
+
+    const fetchCities = async () => {
+      try {
+        setIsLoadingCity(true);
+        setIsLoadingNearbyCities(true);
+        
+        // Get the nearest city first (fastest to display)
+        const cityData = await geocodingService.getNearestCity(
+          currentPosition.latitude,
+          currentPosition.longitude
+        );
+        setNearestCity(cityData);
+        
+        // Then get nearby cities (takes longer)
+        try {
+          const cities = await geocodingService.getNearbyCities(
+            currentPosition.latitude,
+            currentPosition.longitude,
+            maxCities
+          );
+          
+          
+          // Filter out the nearest city since it's already displayed separately
+          const otherCities = cities.filter(city => city.city !== cityData.city);
+          
+          setNearbyCities(otherCities);
+        } catch (error) {
+          console.error('Error fetching nearby cities:', error);
+        }
+      } catch (error) {
+        console.error('Error fetching cities:', error);
+      } finally {
+        setIsLoadingCity(false);
+        setIsLoadingNearbyCities(false);
+      }
+    };
+
+    fetchCities();
+  }, [currentPosition, maxCities]);
 
   React.useEffect(() => {
     if (!mapRef.current && mapContainerRef.current) {
@@ -63,6 +117,12 @@ const MapComponent: React.FC = () => {
           timestamp: Date.now()
         };
         localStorage.setItem('lastKnownPosition', JSON.stringify(position));
+        
+        // Update current position state
+        setCurrentPosition({
+          latitude: e.coords.latitude,
+          longitude: e.coords.longitude
+        });
       });
 
       map.on('load', () => {
@@ -96,10 +156,36 @@ const MapComponent: React.FC = () => {
   }, []);
 
   return (
+    <>
       <div 
         ref={mapContainerRef}
         className="map-container"
       />
+      {/* Display the nearest city marker */}
+      {mapRef.current && nearestCity && (
+        <WeatherMarker 
+          map={mapRef.current} 
+          latitude={nearestCity.latitude}
+          longitude={nearestCity.longitude}
+          cityName={nearestCity.city}
+          isPrimary={true} // Mark as primary city
+        />
+      )}
+      
+      {/* Display markers for all nearby cities */}
+      {mapRef.current && nearbyCities.length > 0 && (
+        nearbyCities.map((city, index) => (
+          <WeatherMarker
+            key={`${city.city}-${index}`}
+            map={mapRef.current!}
+            latitude={city.latitude}
+            longitude={city.longitude}
+            cityName={city.city}
+            isPrimary={false} // Not a primary city
+          />
+        ))
+      )}
+    </>
   );
 };
 

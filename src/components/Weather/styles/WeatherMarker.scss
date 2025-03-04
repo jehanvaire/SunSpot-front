@@ -1,0 +1,119 @@
+.weather-marker {
+  cursor: pointer;
+  z-index: 10;
+  
+  // Primary marker (nearest city) styling
+  &.primary {
+    z-index: 20; // Higher z-index to appear above secondary markers
+    
+    .weather-emoji {
+      font-size: 28px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      border: 2px solid #ffffff;
+      position: relative;
+      overflow: visible;
+      
+      &:hover {
+        transform: scale(1.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        
+        &:after {
+          content: attr(data-temp);
+          position: absolute;
+          bottom: -25px;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 3px 8px;
+          border-radius: 12px;
+          font-size: 12px;
+          white-space: nowrap;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  
+  // Secondary marker (other nearby cities) styling
+  &.secondary {
+    .weather-emoji {
+      font-size: 16px; // Reduced from 20px
+      background-color: rgba(255, 255, 255, 0.6); // More transparent
+      border-radius: 50%;
+      width: 28px; // Reduced from 36px
+      height: 28px; // Reduced from 36px
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.7); // More transparent border
+      position: relative;
+      overflow: visible;
+      opacity: 0.75; // More transparent by default
+      
+      &:hover {
+        transform: scale(1.2);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        opacity: 1;
+        // Make the background more visible on hover
+        background-color: rgba(255, 255, 255, 0.9);
+        // Make the suburb markers stand out when hovered
+        z-index: 30;
+        
+        &:after {
+          content: attr(data-temp);
+          position: absolute;
+          bottom: -22px;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 2px 6px;
+          border-radius: 8px;
+          font-size: 9px; // Smaller font
+          white-space: nowrap;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+  
+  // Add animations for different weather conditions
+  &.rain .weather-emoji {
+    animation: rain-bounce 3s infinite;
+  }
+  
+  &.sun .weather-emoji {
+    animation: sun-pulse 4s infinite;
+  }
+  
+  &.snow .weather-emoji {
+    animation: snow-float 5s infinite;
+  }
+}
+
+@keyframes rain-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes sun-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes snow-float {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  25% { transform: translateY(-3px) rotate(5deg); }
+  75% { transform: translateY(3px) rotate(-5deg); }
+}

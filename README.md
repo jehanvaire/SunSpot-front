@@ -24,7 +24,13 @@ cd SunSpot-front
 npm install
 ```
 
-3. Lancer en développement
+3. Configurer les variables d'environnement
+```bash
+cp .env.example .env.local
+# Puis modifiez .env.local avec vos propres valeurs
+```
+
+4. Lancer en développement
 ```bash
 ionic serve
 ```
@@ -59,6 +65,7 @@ ionic serve
 
 ### API Météo
 - OpenWeather API (pour les données météorologiques en temps réel)
+- Voir `.env.example` pour les variables d'environnement requises
 
 ### UI/UX Components
 - Ionic Components
